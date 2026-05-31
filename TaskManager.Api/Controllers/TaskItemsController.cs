@@ -31,6 +31,18 @@ public class TaskItemsController : ControllerBase
             return NotFound();
         return MapTodo(task);
     }
+    [HttpPatch("{id}/status")]
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+    {
+        var task = await _context.TaskItems.FindAsync(id);
+        if (task == null)
+            return NotFound();
+        if (!Enum.TryParse<TaskItemStatus>(status, true, out var newStatus))
+            return BadRequest("Invalid status value.");
+        task.Status = newStatus;
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
 
     [HttpPost]
     public async Task<ActionResult<TaskItemResponseDto>> Create(TaskItemRequestDto dto)
