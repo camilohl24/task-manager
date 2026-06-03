@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TaskService } from '../task.service';
-import { TaskItem, TaskItemStatus } from '../task.model';
+import { TaskItem, TaskItemRequest, TaskItemStatus } from '../task.model';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -10,7 +10,6 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './task-list.css',
 })
 export class TaskList implements OnInit {
-  private cdr = inject(ChangeDetectorRef);
   private taskService = inject(TaskService);
   private formBuilder = inject(FormBuilder);
   tasks: TaskItem[] = [];
@@ -24,6 +23,15 @@ export class TaskList implements OnInit {
   get doneTasks() {
     return this.tasks.filter((t) => t.status === TaskItemStatus.Done);
   }
+  showModal = false;
+
+  createTask(){
+    this.taskService.createTask(this.form.value as TaskItemRequest).subscribe(data => {
+      this.tasks = [...this.tasks, data]
+      this.showModal = false;
+      this.form.reset();
+    })
+  }
 
   form = this.formBuilder.group({
     title: [''],
@@ -34,7 +42,6 @@ export class TaskList implements OnInit {
   ngOnInit() {
     this.taskService.getTasks().subscribe((data) => {
       this.tasks = [...data];
-      this.cdr.detectChanges();
     });
   }
 
