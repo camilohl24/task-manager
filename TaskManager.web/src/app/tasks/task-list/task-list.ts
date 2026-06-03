@@ -12,6 +12,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 export class TaskList implements OnInit {
   private taskService = inject(TaskService);
   private formBuilder = inject(FormBuilder);
+  private cdr = inject(ChangeDetectorRef);
   tasks: TaskItem[] = [];
 
   get pendingTasks() {
@@ -25,14 +26,6 @@ export class TaskList implements OnInit {
   }
   showModal = false;
 
-  createTask(){
-    this.taskService.createTask(this.form.value as TaskItemRequest).subscribe(data => {
-      this.tasks = [...this.tasks, data]
-      this.showModal = false;
-      this.form.reset();
-    })
-  }
-
   form = this.formBuilder.group({
     title: [''],
     description: [''],
@@ -42,12 +35,33 @@ export class TaskList implements OnInit {
   ngOnInit() {
     this.taskService.getTasks().subscribe((data) => {
       this.tasks = [...data];
+      this.cdr.detectChanges();
     });
+  }
+   createTask(){
+    this.taskService.createTask(this.form.value as TaskItemRequest).subscribe(data => {
+      this.tasks = [...this.tasks, data]
+      this.cdr.detectChanges();
+      this.showModal = false;
+      this.form.reset();
+    })
   }
 
   deleteTask(id: number) {
     this.taskService.deleteTask(id).subscribe((data) => {
       this.tasks = this.tasks.filter((t) => t.id !== id);
+      this.cdr.detectChanges();
     });
+  }
+
+  changeStatus(id: number, status: string){
+    this.taskService.updateStatus(id, status).subscribe(() =>{
+      const task = this.tasks.find(t => t.id === id)
+      if(task){
+        task.status = status as TaskItemStatus
+        this.tasks = [...this.tasks]
+        this.cdr.detectChanges();
+      }
+    })
   }
 }
