@@ -38,12 +38,44 @@ export class TaskList implements OnInit {
       this.cdr.detectChanges();
     });
   }
+  selectedTask: TaskItem | null = null;
+
    createTask(){
     this.taskService.createTask(this.form.value as TaskItemRequest).subscribe(data => {
       this.tasks = [...this.tasks, data]
       this.cdr.detectChanges();
       this.showModal = false;
       this.form.reset();
+    })
+  }
+  openCreate(){
+    this.selectedTask = null
+    this.form.reset()
+    this.showModal = true
+  }
+  openEdit(task: TaskItem){
+    this.selectedTask = task
+    this.form.patchValue({
+      title:  task.title,
+      description: task.description,
+      assignedTo: task.assignedTo,
+      dueDate: task.dueDate
+    })
+    this.showModal = true
+  }
+
+  updateTask(){
+    if(!this.selectedTask) return
+    this.taskService.updateTask(this.selectedTask.id, this.form.value as TaskItemRequest).subscribe(() => {
+      this.tasks = this.tasks.map(t =>
+        t.id === this.selectedTask!.id
+        ? {...t, ...this.form.value as TaskItemRequest}
+        : t
+      )
+      this.cdr.detectChanges()
+      this.showModal = false
+      this.selectedTask = null
+      this.form.reset()
     })
   }
 
@@ -63,5 +95,14 @@ export class TaskList implements OnInit {
         this.cdr.detectChanges();
       }
     })
+  }
+
+  handleSubmit(){
+    if(this.selectedTask){
+      this.updateTask()
+    }
+    else{
+      this.createTask()
+    }
   }
 }
