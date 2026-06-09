@@ -2,10 +2,11 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TaskService } from '../task.service';
 import { TaskItem, TaskItemRequest, TaskItemStatus } from '../task.model';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TaskCard } from '../task-card/task-card';
 
 @Component({
   selector: 'app-task-list',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TaskCard],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css',
 })

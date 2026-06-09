@@ -24,47 +24,11 @@
           }}</span>
         </div>
         @for (task of pendingTasks; track task.id) {
-          <div
-            class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 hover:border-gray-600 transition-colors cursor-pointer"
-          >
-            <p class="text-sm font-medium text-white">{{ task.title }}</p>
-            <p class="text-xs text-gray-400 leading-relaxed">{{ task.description }}</p>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div
-                  class="w-5 h-5 rounded-full bg-blue-900 flex items-center justify-center text-blue-300 text-xs font-medium"
-                >
-                  {{ task.assignedTo?.charAt(0) }}
-                </div>
-                <span class="text-xs text-gray-400">{{ task.assignedTo }}</span>
-              </div>
-              @if (task.dueDate) {
-                <span class="text-xs text-yellow-400"> {{ task.dueDate }}</span>
-              }
-            </div>
-            <button
-              (click)="changeStatus(task.id, 'InProgress')"
-              class="flex-1 text-xs border border-blue-800 text-blue-400 rounded-lg py-1.5 hover:bg-blue-950 transition-colors"
-            >
-              → En proceso
-            </button>
-            <div class="flex gap-2 mt-1">
-              <button
-                (click)="openEdit(task)"
-                class="flex-1 text-xs border border-gray-600 text-gray-400 rounded-lg py-1.5 hover:bg-gray-800 transition-colors"
-              >
-                Editar
-              </button>
-            </div>
-            <div class="flex gap-2 mt-1">
-              <button
-                (click)="deleteTask(task.id)"
-                class="w-full text-xs border border-red-900 text-red-400 rounded-lg py-1.5 hover:bg-red-950 transition-colors"
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
+         <app-task-card
+          [task] = "task",
+          (onDelete) ="deleteTask($event)"
+          (onEdit)="openEdit($event)"
+          (onStatusChange)="changeStatus($event.id,$event.status)"></app-task-card>
         }
       </div>
 
@@ -78,53 +42,11 @@
           }}</span>
         </div>
         @for (task of inProgressTasks; track task.id) {
-          <div
-            class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 hover:border-gray-600 transition-colors cursor-pointer"
-          >
-            <p class="text-sm font-medium text-white">{{ task.title }}</p>
-            <p class="text-xs text-gray-400 leading-relaxed">{{ task.description }}</p>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div
-                  class="w-5 h-5 rounded-full bg-blue-900 flex items-center justify-center text-blue-300 text-xs font-medium"
-                >
-                  {{ task.assignedTo?.charAt(0) }}
-                </div>
-                <span class="text-xs text-gray-400">{{ task.assignedTo }}</span>
-              </div>
-              @if (task.dueDate) {
-                <span class="text-xs text-yellow-400"> {{ task.dueDate }}</span>
-              }
-            </div>
-            <button
-              (click)="changeStatus(task.id, 'Pending')"
-              class="flex-1 text-xs border border-yellow-800 text-yellow-400 rounded-lg py-1.5 hover:bg-yellow-950 transition-colors"
-            >
-              ← Pendiente
-            </button>
-            <button
-              (click)="changeStatus(task.id, 'Done')"
-              class="flex-1 text-xs border border-green-800 text-green-400 rounded-lg py-1.5 hover:bg-green-950 transition-colors"
-            >
-              → Completado
-            </button>
-            <div class="flex gap-2 mt-1">
-              <button
-                (click)="openEdit(task)"
-                class="flex-1 text-xs border border-gray-600 text-gray-400 rounded-lg py-1.5 hover:bg-gray-800 transition-colors"
-              >
-                Editar
-              </button>
-            </div>
-            <div class="flex gap-2 mt-1">
-              <button
-                (click)="deleteTask(task.id)"
-                class="w-full text-xs border border-red-900 text-red-400 rounded-lg py-1.5 hover:bg-red-950 transition-colors"
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
+          <app-task-card
+          [task] = "task",
+          (onDelete) ="deleteTask($event)"
+          (onEdit)="openEdit($event)"
+          (onStatusChange)="changeStatus($event.id,$event.status)"></app-task-card>
         }
       </div>
 
@@ -138,45 +60,11 @@
           }}</span>
         </div>
         @for (task of doneTasks; track task.id) {
-          <div
-            class="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 hover:border-gray-600 transition-colors cursor-pointer"
-          >
-            <p class="text-sm font-medium text-white">{{ task.title }}</p>
-            <p class="text-xs text-gray-400 leading-relaxed">{{ task.description }}</p>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div
-                  class="w-5 h-5 rounded-full bg-blue-900 flex items-center justify-center text-blue-300 text-xs font-medium"
-                >
-                  {{ task.assignedTo?.charAt(0) }}
-                </div>
-                <span class="text-xs text-gray-400">{{ task.assignedTo }}</span>
-              </div>
-              @if (task.dueDate) {
-                <span class="text-xs text-yellow-400"> {{ task.dueDate }}</span>
-              }
-            </div>
-            <button
-              (click)="changeStatus(task.id, 'InProgress')"
-              class="flex-1 text-xs border border-blue-800 text-blue-400 rounded-lg py-1.5 hover:bg-blue-950 transition-colors"
-            >
-              ← En proceso
-            </button>
-            <button
-              (click)="openEdit(task)"
-              class="flex-1 text-xs border border-gray-600 text-gray-400 rounded-lg py-1.5 hover:bg-gray-800 transition-colors"
-            >
-              Editar
-            </button>
-            <div class="flex gap-2 mt-1">
-              <button
-                (click)="deleteTask(task.id)"
-                class="w-full text-xs border border-red-900 text-red-400 rounded-lg py-1.5 hover:bg-red-950 transition-colors"
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
+           <app-task-card
+          [task] = "task",
+          (onDelete) ="deleteTask($event)"
+          (onEdit)="openEdit($event)"
+          (onStatusChange)="changeStatus($event.id,$event.status)"></app-task-card>
         }
       </div>
     </div>
